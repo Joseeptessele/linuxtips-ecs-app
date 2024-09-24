@@ -1,13 +1,3 @@
-## Lecture 3-4: ECS Service + Module + Autoscale
-On this lesson we created a module to provision an ECS Service and this project was responsible to consume it.
-
-## What I have learned
-* How to use modules on terraform
-* How to configure an ECS service 
-* Difference between task and service execution role
-* How to configure autoscale on ECS service
-
-
 ## Requirements
 
 No requirements.
@@ -22,7 +12,7 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_service"></a> [service](#module\_service) | local | n/a |
+| <a name="module_service"></a> [service](#module\_service) | /Users/josetessele/Development/Formação de Containers na AWS/linuxtips-ecs-service-module | n/a |
 
 ## Resources
 

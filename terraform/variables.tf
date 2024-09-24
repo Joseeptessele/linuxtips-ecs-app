@@ -49,6 +49,10 @@ variable "ssm_private_subnet_c" {
   type        = string
 }
 
+variable "ssm_alb" {
+  description = "ALB arn stored on parameter store"
+  type = string
+}
 
 variable "environment_variables" {
   description = "List of environment variables that are going to be used by service tasks"
@@ -82,77 +86,101 @@ variable "service_hosts" {
 }
 
 variable "scale_type" {
-
+  description = "Value for scale type. Currently supported values by module are: requests_tracking, cpu and cpu_tracking"
+  type = string
 }
 
 variable "task_minimum" {
-
+  description = "ECS minimum number of running tasks"
+  type = number
 }
 
 variable "task_maximum" {
-
+  description = "ECS maximum number of running tasks"
+  type = number
 }
 
 
 ### CPU AUTOSCALING
 
 variable "scale_out_cpu_threshold" {
-
+  description = "CPU percentage threshold to scale out"
+  type = number
 }
 
 variable "scale_out_adjustment" {
-
+  description = "Number of tasks to be incremented during scale out"
+  type = number
 }
 
-variable "sclae_out_comparison_operator" {
-
+variable "scale_out_comparison_operator" {
+  description = "Scale out strategy"
+  type = string
 }
 
 variable "scale_out_statistic" {
-
+  description = "Scale out metric statistic"
+  type = string
 }
 
 variable "scale_out_period" {
-
+  description = "Start of scale out after reaching the threshold"
+  type = number
 }
 
 variable "scale_out_evaluation_periods" {
-
+  description = "The number of periods over which data is compared to the specified threshold"
+  type = number
 }
 
 variable "scale_out_cooldown" {
-
+  description = "Amount of time, in seconds, after a scaling activity completes and before the next scaling activity can start"
+  type = number
 }
 
 variable "scale_in_cpu_threshold" {
-
+  description = "CPU percentage threshold to scale in"
+  type = number
 }
 
 variable "scale_in_adjustment" {
-
+  description = "Number of tasks to be decremented during scale in"
+  type = number
 }
 
-variable "sclae_in_comparison_operator" {
-
+variable "scale_in_comparison_operator" {
+  description = "Scale in strategy"
+  type = string
 }
 
 variable "scale_in_statistic" {
-
+  description = "Scale in metric statistic"
+  type = string
 }
 
 variable "scale_in_period" {
-
+  description = "Start of scale in after reaching the threshold"
+  type = number
 }
 
 variable "scale_in_evaluation_periods" {
-
+  description = "The number of periods over which data is compared to the specified threshold"
+  type = number
 }
 
 variable "scale_in_cooldown" {
-
+  description = "Amount of time, in seconds, after a scaling in activity completes and before the next scaling in activity can start"
+  type = number
 }
 
 ### CPU Tracking
 variable "scale_tracking_cpu" {
+  description = "CPU percentage threshold to scale out when using cpu_tracking scale type"
+  type = number
+}
 
+### Tracking Requests
+variable "scale_tracking_requests" {
+  description = "Number of requests, per second, desired per task"
+  type = number
 }

@@ -33,7 +33,7 @@ module "service" {
   ### CPU AUTOSCALING
   scale_out_cpu_threshold       = var.scale_out_cpu_threshold
   scale_out_adjustment          = var.scale_out_adjustment
-  sclae_out_comparison_operator = var.sclae_out_comparison_operator
+  scale_out_comparison_operator = var.scale_out_comparison_operator
   scale_out_statistic           = var.scale_out_statistic
   scale_out_period              = var.scale_out_period
   scale_out_evaluation_periods  = var.scale_out_evaluation_periods
@@ -41,11 +41,14 @@ module "service" {
 
   scale_in_cpu_threshold       = var.scale_in_cpu_threshold
   scale_in_adjustment          = var.scale_in_adjustment
-  sclae_in_comparison_operator = var.sclae_in_comparison_operator
+  scale_in_comparison_operator = var.scale_in_comparison_operator
   scale_in_statistic           = var.scale_in_statistic
   scale_in_period              = var.scale_in_period
   scale_in_evaluation_periods  = var.scale_in_evaluation_periods
   scale_in_cooldown            = var.scale_in_cooldown
 
   scale_tracking_cpu = var.scale_tracking_cpu
+
+  scale_tracking_requests = var.scale_tracking_requests
+  alb_arn = data.aws_ssm_parameter.alb.arn
 }

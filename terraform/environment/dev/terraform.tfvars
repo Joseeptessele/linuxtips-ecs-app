@@ -9,6 +9,7 @@ ssm_listener         = "/linuxtips/ecs/lb/listener"
 ssm_private_subnet_a = "/linuxtips-vpc/vpc/subnet_private_1a"
 ssm_private_subnet_b = "/linuxtips-vpc/vpc/subnet_private_1b"
 ssm_private_subnet_c = "/linuxtips-vpc/vpc/subnet_private_1c"
+ssm_alb              = "/linuxtips/ecs/lb/id"
 environment_variables = [
   {
     name  = "FOO",
@@ -38,8 +39,9 @@ service_hosts = [
   "chip.linuxtips.demo"
 ]
 
-# scale_type   = "cpu"
-scale_type = "cpu_tracking"
+# scale_type = "requests_tracking"
+scale_type   = "cpu"
+# scale_type = "cpu_tracking"
 
 task_minimum = 3
 task_maximum = 12
@@ -48,7 +50,7 @@ task_maximum = 12
 ### CPU AUTOSCALING
 scale_out_cpu_threshold       = 50
 scale_out_adjustment          = 2
-sclae_out_comparison_operator = "GreaterThanOrEqualToThreshold"
+scale_out_comparison_operator = "GreaterThanOrEqualToThreshold"
 scale_out_statistic           = "Average"
 scale_out_period              = 60
 scale_out_evaluation_periods  = 2
@@ -56,9 +58,11 @@ scale_out_cooldown            = 60
 
 scale_in_cpu_threshold       = 30
 scale_in_adjustment          = -1
-sclae_in_comparison_operator = "LessThanOrEqualToThreshold"
+scale_in_comparison_operator = "LessThanOrEqualToThreshold"
 scale_in_statistic           = "Average"
 scale_in_period              = 60
 scale_in_evaluation_periods  = 2
 scale_in_cooldown            = 60
-scale_tracking_cpu           = 50
+
+scale_tracking_cpu      = 50
+scale_tracking_requests = 30
