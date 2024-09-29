@@ -71,7 +71,10 @@ variable "service_healthcheck" {
 
 variable "service_launch_type" {
   description = "ECS launch type: ECS or FARGATE"
-  type        = string
+  type = list(object({
+    capacity_provider = string
+    weight = number
+  }))
 }
 
 variable "service_task_count" {
