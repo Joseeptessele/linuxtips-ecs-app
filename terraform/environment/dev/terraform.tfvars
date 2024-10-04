@@ -1,6 +1,6 @@
 region               = "us-east-1"
 cluster_name         = "linuxtips-ecs-cluster"
-service_name         = "chip"
+service_name         = "linuxtips-app"
 service_port         = 8080
 service_cpu          = 256
 service_memory       = 512
@@ -45,7 +45,7 @@ service_launch_type = [
 service_task_count  = 3
 
 service_hosts = [
-  "chip.linuxtips.demo"
+  "app.linuxtips.demo"
 ]
 
 # scale_type = "requests_tracking"

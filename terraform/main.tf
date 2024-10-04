@@ -1,5 +1,5 @@
 module "service" {
-  source                      = "/Users/josetessele/Development/Formação de Containers na AWS/linuxtips-ecs-service-module"
+  source                      = "github.com/Joseeptessele/linuxtips-ecs-service-module?ref=v1"
   region                      = var.region
   cluster_name                = var.cluster_name
   service_name                = var.service_name
@@ -51,4 +51,6 @@ module "service" {
 
   scale_tracking_requests = var.scale_tracking_requests
   alb_arn = data.aws_ssm_parameter.alb.value
+
+  container_image = var.container_image
 }
