@@ -1,4 +1,4 @@
-## Lecture 3-4: ECS Service + Module + Autoscale
+## Lecture 3-4-5: ECS Service + Module + Autoscale + Github Actions
 On this lesson we created a module to provision an ECS Service and this project was responsible to consume it.
 
 ## What I have learned
@@ -6,6 +6,8 @@ On this lesson we created a module to provision an ECS Service and this project 
 * How to configure an ECS service 
 * Difference between task and service execution role
 * How to configure autoscale on ECS service
+* What is Github Actions and how it works
+* Create a pipeline using Github Actions to test code, validate terraform, build and publish application image to AWS ECR
 
 
 ## Requirements
