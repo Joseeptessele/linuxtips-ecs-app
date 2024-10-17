@@ -1,4 +1,4 @@
-## Lecture 3-4-5: ECS Service + Module + Autoscale + Github Actions
+## Lecture: ECS Service + Module + Autoscale + Github Actions
 On this lesson we created a module to provision an ECS Service and this project was responsible to consume it.
 
 ## What I have learned
@@ -8,6 +8,8 @@ On this lesson we created a module to provision an ECS Service and this project 
 * How to configure autoscale on ECS service
 * What is Github Actions and how it works
 * Create a pipeline using Github Actions to test code, validate terraform, build and publish application image to AWS ECR
+* How to configure EFS to be used by cluster tasks
+* How to configure SSM Parameter Store/Secrets Manager values as environment variables
 
 
 ## Requirements
@@ -24,14 +26,22 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_service"></a> [service](#module\_service) | local | n/a |
+| <a name="module_service"></a> [service](#module\_service) | github.com/Joseeptessele/linuxtips-ecs-service-module | v1.2.0 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
+| [aws_efs_file_system.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_file_system) | resource |
+| [aws_efs_mount_target.mount_a](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_mount_target) | resource |
+| [aws_efs_mount_target.mount_b](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_mount_target) | resource |
+| [aws_efs_mount_target.mount_c](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/efs_mount_target) | resource |
 | [aws_iam_role.main](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy.ecs_task_execution_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
+| [aws_secretsmanager_secret.teste](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
+| [aws_secretsmanager_secret_version.teste](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
+| [aws_security_group.efs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
+| [aws_ssm_parameter.teste](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssm_parameter) | resource |
 | [aws_ssm_parameter.alb](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 | [aws_ssm_parameter.listener](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
 | [aws_ssm_parameter.private_subnet_a](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssm_parameter) | data source |
@@ -45,6 +55,7 @@ No requirements.
 |------|-------------|------|---------|:--------:|
 | <a name="input_capabilities"></a> [capabilities](#input\_capabilities) | List of especial capabilities needed by the service | `list(string)` | n/a | yes |
 | <a name="input_cluster_name"></a> [cluster\_name](#input\_cluster\_name) | ECS Cluster name | `string` | n/a | yes |
+| <a name="input_container_image"></a> [container\_image](#input\_container\_image) | Image with application deployment tag on ECS | `string` | n/a | yes |
 | <a name="input_environment_variables"></a> [environment\_variables](#input\_environment\_variables) | List of environment variables that are going to be used by service tasks | `list(map(string))` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | provisioned resources region | `string` | n/a | yes |
 | <a name="input_scale_in_adjustment"></a> [scale\_in\_adjustment](#input\_scale\_in\_adjustment) | Number of tasks to be decremented during scale in | `number` | n/a | yes |
@@ -67,12 +78,12 @@ No requirements.
 | <a name="input_service_cpu"></a> [service\_cpu](#input\_service\_cpu) | CPU allocated for service (CPU unit) | `number` | n/a | yes |
 | <a name="input_service_healthcheck"></a> [service\_healthcheck](#input\_service\_healthcheck) | Service health check configuration | `map(any)` | n/a | yes |
 | <a name="input_service_hosts"></a> [service\_hosts](#input\_service\_hosts) | List of addresses or host names assigned to service for load balancing purposes | `list(string)` | n/a | yes |
-| <a name="input_service_launch_type"></a> [service\_launch\_type](#input\_service\_launch\_type) | ECS launch type: ECS or FARGATE | `string` | n/a | yes |
+| <a name="input_service_launch_type"></a> [service\_launch\_type](#input\_service\_launch\_type) | ECS launch type: ECS or FARGATE | <pre>list(object({<br>    capacity_provider = string<br>    weight            = number<br>  }))</pre> | n/a | yes |
 | <a name="input_service_memory"></a> [service\_memory](#input\_service\_memory) | Memory allocated ofr service (MB unit) | `number` | n/a | yes |
 | <a name="input_service_name"></a> [service\_name](#input\_service\_name) | ECS service name | `string` | n/a | yes |
 | <a name="input_service_port"></a> [service\_port](#input\_service\_port) | Port where service is going to be available | `number` | n/a | yes |
 | <a name="input_service_task_count"></a> [service\_task\_count](#input\_service\_task\_count) | Number of tasks that service must keep simultaneously | `number` | n/a | yes |
-| <a name="input_ssm_alb"></a> [ssm\_alb](#input\_ssm\_alb) | n/a | `string` | n/a | yes |
+| <a name="input_ssm_alb"></a> [ssm\_alb](#input\_ssm\_alb) | ALB arn stored on parameter store | `string` | n/a | yes |
 | <a name="input_ssm_listener"></a> [ssm\_listener](#input\_ssm\_listener) | Application Load Balancer ARN's listener stored on AWS SSM | `any` | n/a | yes |
 | <a name="input_ssm_private_subnet_a"></a> [ssm\_private\_subnet\_a](#input\_ssm\_private\_subnet\_a) | Private subnet ID (located at us-east-1a) stored on AWS SSM | `string` | n/a | yes |
 | <a name="input_ssm_private_subnet_b"></a> [ssm\_private\_subnet\_b](#input\_ssm\_private\_subnet\_b) | Private subnet ID (located at us-east-1b) stored on AWS SSM | `string` | n/a | yes |

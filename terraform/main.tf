@@ -1,5 +1,5 @@
 module "service" {
-  source                      = "github.com/Joseeptessele/linuxtips-ecs-service-module?ref=v1.1.0"
+  source                      = "github.com/Joseeptessele/linuxtips-ecs-service-module?ref=v1.2.0"
   region                      = var.region
   cluster_name                = var.cluster_name
   service_name                = var.service_name
@@ -12,6 +12,17 @@ module "service" {
 
   capabilities          = var.capabilities
   environment_variables = var.environment_variables
+
+  secrets = [
+    {
+      name      = "VARIAVEL_COM_VALOR_DO_SSM"
+      valueFrom = aws_ssm_parameter.teste.arn
+    },
+    {
+      name      = "VARIAVEL_COM_VALOR_DO_SECRETS"
+      valueFrom = aws_secretsmanager_secret.teste.arn
+    }
+  ]
 
   service_healthcheck = var.service_healthcheck
   service_launch_type = var.service_launch_type
